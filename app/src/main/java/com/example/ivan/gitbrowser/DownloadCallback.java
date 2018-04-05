@@ -7,8 +7,6 @@ import android.net.NetworkInfo;
  *
  */
 
-
-
 public interface DownloadCallback<T> {
     interface Progress {
         int ERROR = -1;

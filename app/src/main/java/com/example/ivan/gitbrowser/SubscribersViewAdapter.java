@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SubscribersViewAdapter extends RecyclerView.Adapter<SubscrViewHolder> {
 
-    List<Subscriber> list = Collections.emptyList();
+    private List<Subscriber> list = Collections.emptyList();
     private Context context;
 
 

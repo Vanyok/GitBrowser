@@ -16,8 +16,8 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
+            android:layout_height="?android:actionBarSize"
+            android:background="@android:color/holo_orange_dark"
             app:expanded="false">
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -25,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                app:contentScrim="@android:color/darker_gray"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="Details"
                 app:titleEnabled="false"
@@ -38,22 +37,23 @@
                     android:layout_height="45dp"
                     android:fitsSystemWindows="false"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
+                    app:titleTextColor="@android:color/background_light" />
 
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
         <TextView
-            android:id="@+id/projNameTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-        <TextView
             android:id="@+id/subscrCntTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title" />
+            android:paddingBottom="2dp"
+            android:paddingEnd="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingStart="4dp"
+            android:paddingTop="2dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerSubView"

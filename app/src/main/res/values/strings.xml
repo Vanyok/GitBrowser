@@ -4,8 +4,8 @@
         <item quantity="other">%d projects found.</item>
     </plurals>
     <plurals name="numberOfSubscribers">
-        <item quantity="one">%d subscriber.</item>
-        <item quantity="other">%d subscribers.</item>
+        <item quantity="one">%d subscriber:</item>
+        <item quantity="other">%d subscribers:</item>
     </plurals>
     <plurals name="numberOfForks">
         <item quantity="one">%d fork.</item>
@@ -32,4 +32,7 @@
     <string name="gitResKey">GitResponce</string>
     <string name="repository">Repository</string>
     <string name="login">login</string>
+    <string name="search_hint">enter keyword</string>
+    <string name="app_label">Git Browser</string>
+    <string name="search_gits">Search gits</string>
 </resources>

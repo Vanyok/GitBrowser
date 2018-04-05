@@ -79,7 +79,7 @@ public class GitProject {
     }
 
 
-    public String getLinkToSubscr() {
+    String getLinkToSubscr() {
         return linkToSubscr;
     }
 

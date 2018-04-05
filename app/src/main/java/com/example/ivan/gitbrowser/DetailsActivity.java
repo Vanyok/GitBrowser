@@ -30,15 +30,15 @@ public class DetailsActivity extends AppCompatActivity implements DownloadCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //get passed variables
         Intent intent = getIntent();
+        //get passed variables
         String name = intent.getStringExtra("projName");
         String subsrLink = intent.getStringExtra("subscrLink");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(name);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TextView nameTv = findViewById(R.id.projNameTitle);
-        nameTv.setText(name);
+
         //download subscribers list
         mNetworkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), subsrLink);
         mNetworkFragment.setUrlString(subsrLink);

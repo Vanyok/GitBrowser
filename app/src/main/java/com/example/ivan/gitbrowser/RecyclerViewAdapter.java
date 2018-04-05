@@ -17,14 +17,12 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<ProjViewHolder> {
 
-    List<GitProject> list = Collections.emptyList();
-    private Context context;
+    private List<GitProject> list = Collections.emptyList();
     private Resources resources;
-    ItemClickListener clickListener;
+    private ItemClickListener clickListener;
 
     RecyclerViewAdapter(List<GitProject> list, Context context, ItemClickListener listener) {
         this.list = list;
-        this.context = context;
         this.clickListener = listener;
     }
 

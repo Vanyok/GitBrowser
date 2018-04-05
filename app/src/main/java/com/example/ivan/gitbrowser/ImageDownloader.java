@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,12 +138,70 @@ class ImageDownloader {
         return null;
     }
 
-    private Bitmap downloadBitmap(URL url) throws IOException {
+    private static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
+    private static byte[] getBytesFromIs(InputStream is)
+    {
+        try {
+            try (ByteArrayOutputStream os = new ByteArrayOutputStream();) {
+                byte[] buffer = new byte[1024];
+                for (int len = 0; (len = is.read(buffer)) != -1;) {
+                    os.write(buffer, 0, len);
+                }
+                os.flush();
+                return os.toByteArray();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    private static Bitmap decodeSampledBitmapFromStream(InputStream res,
+                                                        int reqWidth, int reqHeight) {
+        byte[] byteRes = getBytesFromIs(res);
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        if(byteRes != null)
+        BitmapFactory.decodeByteArray(byteRes, 0,byteRes.length, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        if(byteRes != null)
+        return  BitmapFactory.decodeByteArray(byteRes, 0,byteRes.length, options);
+        else return null;
+    }
+
+    private Bitmap downloadBitmap(URL url, int width, int height) throws IOException {
 
         InputStream stream = null;
         HttpsURLConnection connection = null;
-        String result = null;
-        try {
+         try {
             connection = (HttpsURLConnection) url.openConnection();
             // Timeout for reading InputStream arbitrarily set to 3000ms.
             connection.setReadTimeout(3000);
@@ -162,9 +221,10 @@ class ImageDownloader {
             // Retrieve the response body as an InputStream.
             stream = connection.getInputStream();
             if (stream != null) {
-                // Converts Stream to Bitmap with max length unlimited.
-                return BitmapFactory.decodeStream(new FlushedInputStream(
-                        stream));
+                // Converts Stream to Bitmap .
+                return   ImageDownloader.decodeSampledBitmapFromStream(
+                        stream,width,height);
+
             }
         } catch (IOException e) {
             Log.w(LOG_TAG, "I/O error while retrieving bitmap from " + url, e);
@@ -185,34 +245,6 @@ class ImageDownloader {
 
     }
 
-    /*
-     * An InputStream that skips the exact number of bytes provided, unless it
-     * reaches EOF.
-     */
-    static class FlushedInputStream extends FilterInputStream {
-        public FlushedInputStream(InputStream inputStream) {
-            super(inputStream);
-        }
-
-        @Override
-        public long skip(long n) throws IOException {
-            long totalBytesSkipped = 0L;
-            while (totalBytesSkipped < n) {
-                long bytesSkipped = in.skip(n - totalBytesSkipped);
-                if (bytesSkipped == 0L) {
-                    int b = read();
-                    if (b < 0) {
-                        break; // we reached EOF
-                    } else {
-                        bytesSkipped = 1; // we read one byte
-                    }
-                }
-                totalBytesSkipped += bytesSkipped;
-            }
-            return totalBytesSkipped;
-        }
-    }
-
     /**
      * The actual AsyncTask that will asynchronously download the image.
      */
@@ -220,6 +252,8 @@ class ImageDownloader {
     class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         private String url;
         private final WeakReference<ImageView> imageViewReference;
+        private int width =  96;
+        private int height = 96;
 
         public BitmapDownloaderTask(ImageView imageView) {
             imageViewReference = new WeakReference<ImageView>(imageView);
@@ -233,7 +267,7 @@ class ImageDownloader {
             String urlString = params[0];
             try {
                 URL url = new URL(urlString);
-                return downloadBitmap(url);
+                return downloadBitmap(url,width,height);
             } catch (Exception e) {
                 return null;
             }

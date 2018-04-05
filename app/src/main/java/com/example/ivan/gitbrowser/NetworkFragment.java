@@ -18,11 +18,6 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by ivan on 20.12.17.
- *
- */
-
-/**
  * Implementation of headless Fragment that runs an AsyncTask to fetch data from the network.
  */
 public class NetworkFragment extends Fragment {
